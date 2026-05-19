@@ -2,7 +2,7 @@
 
 namespace Oil_System.Models
 {
-    public class Product : BaseEntity
+    public class OilPacket : BaseEntity
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -12,7 +12,7 @@ namespace Oil_System.Models
         [ForeignKey("Brand")]
         public Guid BrandId { get; set; }
         public virtual Brand? Brand { get; set; }
-        
+
         public Guid CategoryId { get; set; }
         public virtual Category? Category { get; set; }
 
