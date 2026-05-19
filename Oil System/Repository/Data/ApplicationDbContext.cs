@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Oil_System.Models;
 
-namespace Oil_System.Repository
+namespace Oil_System.Repository.Data
 {
     public class ApplicationDbContext : DbContext
     {
@@ -15,10 +15,9 @@ namespace Oil_System.Repository
         }
 
 
-        public virtual DbSet<Product> OilBottles { get; set; }
+        public virtual DbSet<OilPacket> OilPackets { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
         public DbSet<Category> Categories { get; set; }
-
         public DbSet<AppUser> AppUsers { get; set; }
     }
 }
