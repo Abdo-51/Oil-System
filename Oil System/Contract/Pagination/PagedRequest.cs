@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using System.Text.Json.Serialization;
 
-namespace Oil_System.Contract.Request.Pagination
+namespace Oil_System.Contract.Pagination
 {
     public class PagedRequest<T> where T : class
     {

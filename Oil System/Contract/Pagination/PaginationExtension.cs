@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace Oil_System.Contract.Request.Pagination
+namespace Oil_System.Contract.Pagination
 {
     public static class PaginationExtension
     {

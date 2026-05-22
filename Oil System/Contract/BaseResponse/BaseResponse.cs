@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Oil_System.Contract.Response.BaseResponse
+namespace Oil_System.Contract.BaseResponse
 {
     public class BaseResponse<T>
     {

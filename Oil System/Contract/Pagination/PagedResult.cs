@@ -1,4 +1,4 @@
-﻿namespace Oil_System.Contract.Request.Pagination
+﻿namespace Oil_System.Contract.Pagination
 {
     public class PagedResult<T>
     {
