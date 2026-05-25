@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Oil_System.Contract.Pagination;
+using Oil_System.Models;
 using Oil_System.Repository.Data;
 
 namespace Oil_System.BaseInterface.Implementation
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         #region Fields
         private readonly ApplicationDbContext _context;
