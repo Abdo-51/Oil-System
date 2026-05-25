@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Oil_System.Contract.Request.Authentcation;
+using Oil_System.Helper.Mapping;
+using Oil_System.Models;
 using Oil_System.Repository.Data;
 using Oil_System.Service;
 using System.Text;
@@ -22,7 +26,7 @@ namespace Oil_System.Helper
             #endregion
 
             #region Identity registeration
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<AppUser, IdentityRole>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()
                     .AddDefaultTokenProviders();
             #endregion
@@ -75,6 +79,12 @@ namespace Oil_System.Helper
                 });
             });
             #endregion
+
+            //Register FluentValidation
+            services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
+
+            //Register Automapper
+            services.AddAutoMapper(cfg => cfg.AddProfile<Profiling>());
 
             #region Custom Services registeration
             services.AddScoped<IAuthenticationService, AuthenticationService>();

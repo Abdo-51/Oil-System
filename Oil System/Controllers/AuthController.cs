@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.Data;
+﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Oil_System.Contract.Response.Authentcation;
-using Oil_System.Models;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using Oil_System.Contract;
+using Oil_System.Contract.Request.Authentcation;
+using Oil_System.Service;
 
 namespace Oil_System.Controllers
 {
@@ -13,63 +10,54 @@ namespace Oil_System.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
+        #region Fields
+        private readonly IAuthenticationService _authenticationService;
+        private readonly IValidator<RegisterRequest> _validator;
+        #endregion
 
-        public AuthController(IConfiguration configuration)
+        #region Constructors
+        public AuthController(IAuthenticationService authenticationService, IValidator<RegisterRequest> validator)
         {
-            _configuration = configuration;
+            _authenticationService = authenticationService;
+            _validator = validator;
         }
+        #endregion
 
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest request)
+        #region Methods
+        [HttpPost(ApiRoute.Account.Register)]
+        public async Task<IActionResult> CreateUser(RegisterRequest request)
         {
-            if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
-                return BadRequest("Email and password are required.");
+            var validationResult = _validator.Validate(request);
 
-            if (request.Email != "admin@test.com" || request.Password != "123456")
-                return Unauthorized("Invalid email or password");
-
-            var expireAt = DateTime.Now.AddMinutes(60);
-            var token = GenerateJwtToken(request.Email, expireAt);
-
-            var response = new LoginResponse
+            if (!validationResult.IsValid)
             {
-                Token = token,
-                TokenType = "Bearer",
-                ExpireAt = expireAt,
-                Email = request.Email,
-                Role = "Admin"
-            };
+                return BadRequest(validationResult.Errors.Select(err => new
+                {
+                    PropertyName = err.PropertyName,
+                    ErrorMessage = err.ErrorMessage
+                }));
+            }
 
-            return Ok(response);
+            var result = await _authenticationService.CreateAccountAsync(request);
+            return Ok(result);
         }
-        private string GenerateJwtToken(string email, DateTime expireAt)
+
+
+        [HttpPost(ApiRoute.Account.Login)]
+        public async Task<IActionResult> LoginUser(LoginRequest request)
         {
-            var claims = new[]
-            {
-        new Claim(ClaimTypes.Email, email),
-        new Claim(ClaimTypes.Name, email),
-        new Claim(ClaimTypes.Role, "Admin")
-    };
-
-            var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!)
-            );
-
-            var credentials = new SigningCredentials(
-                key,
-                SecurityAlgorithms.HmacSha256
-            );
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                claims: claims,
-                expires: expireAt,
-                signingCredentials: credentials
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var result = await _authenticationService.LoginAsync(request);
+            return Ok(result);
         }
+
+
+        [HttpPost(ApiRoute.Account.Update)]
+        public async Task<IActionResult> UpdateUser(ChangeStatusRequest request)
+        {
+            var result = await _authenticationService.ChangeStatusAsync(request);
+            return Ok(result);
+        }
+
+        #endregion
     }
 }
