@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Oil_System.Helper;
+using Oil_System.Helper.Middleware;
 using Oil_System.Repository.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,6 +41,8 @@ if (app.Environment.IsDevelopment())
     }
 
 }
+
+app.UseMiddleware<CustomMiddleware>();
 
 app.UseAuthentication();
 
