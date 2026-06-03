@@ -9,9 +9,9 @@ namespace Oil_System.Contract.BaseResponse
             return new BaseResponse<T>(data, true, HttpStatusCode.OK, "Operation completed successfully.");
         }
 
-        public BaseResponse<T> Failure<T>(HttpStatusCode statusCode, string errorMessage)
+        public BaseResponse<T> BadRequest<T>(string errorMessage)
         {
-            return new BaseResponse<T>(false, statusCode, errorMessage);
+            return new BaseResponse<T>(false, HttpStatusCode.BadRequest, errorMessage);
         }
 
         public BaseResponse<T> Created<T>()
@@ -27,11 +27,6 @@ namespace Oil_System.Contract.BaseResponse
         public BaseResponse<T> Deleted<T>()
         {
             return new BaseResponse<T>(true, HttpStatusCode.Accepted, "Resource updated successfully.");
-        }
-
-        public BaseResponse<T> NotFound<T>()
-        {
-            return new BaseResponse<T>(false, HttpStatusCode.BadRequest, "Resource not Found.");
         }
     }
 }

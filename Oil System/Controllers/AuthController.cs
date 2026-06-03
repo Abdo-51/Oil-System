@@ -8,7 +8,7 @@ using Oil_System.Service;
 namespace Oil_System.Controllers
 {
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController : AppControllerBase
     {
         #region Fields
         private readonly IAuthenticationService _authenticationService;
@@ -31,14 +31,14 @@ namespace Oil_System.Controllers
         public async Task<IActionResult> GetAllUsers(UsersSearch request)
         {
             var result = await _authenticationService.GetUsersAsync(request);
-            return Ok(result);
+            return GenericResult(result);
         }
 
         [HttpPost(ApiRoute.Account.GetById)]
         public async Task<IActionResult> GetUserById(Guid id)
         {
             var result = await _authenticationService.GetUserByIdAsync(id);
-            return Ok(result);
+            return GenericResult(result);
         }
 
         [Authorize(Roles = "Admin")]
@@ -57,7 +57,7 @@ namespace Oil_System.Controllers
             }
 
             var result = await _authenticationService.CreateAccountAsync(request);
-            return Ok(result);
+            return GenericResult(result);
         }
 
 
@@ -65,7 +65,7 @@ namespace Oil_System.Controllers
         public async Task<IActionResult> LoginUser(LoginRequest request)
         {
             var result = await _authenticationService.LoginAsync(request);
-            return Ok(result);
+            return GenericResult(result);
         }
 
         [Authorize(Roles = "Admin")]
@@ -84,7 +84,7 @@ namespace Oil_System.Controllers
             }
 
             var result = await _authenticationService.ChangeStatusAsync(request);
-            return Ok(result);
+            return GenericResult(result);
         }
 
         #endregion

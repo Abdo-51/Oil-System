@@ -9,7 +9,6 @@ using Oil_System.Contract.Response.Authentcation;
 using Oil_System.Models;
 using Oil_System.Resource.Authentication;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using System.Security.Claims;
 using System.Text;
 
@@ -56,7 +55,7 @@ namespace Oil_System.Service
 
             if (existingUser != null)
             {
-                return Failure<RegisterResponse>(System.Net.HttpStatusCode.BadRequest, "Email is already in use.");
+                return BadRequest<RegisterResponse>("Email is already in use.");
             }
 
             var newUser = _mapper.Map<AppUser>(request);
@@ -66,7 +65,7 @@ namespace Oil_System.Service
             if (!result.Succeeded)
             {
                 var error = result?.Errors?.FirstOrDefault().Description;
-                return Failure<RegisterResponse>(System.Net.HttpStatusCode.BadRequest, $"Account creation failed because {error}");
+                return BadRequest<RegisterResponse>($"Account creation failed because {error}");
             }
 
             await _userManager.AddToRoleAsync(newUser, request.Role);
@@ -81,7 +80,7 @@ namespace Oil_System.Service
             {
 
                 if (!user.IsActive)
-                    return Failure<LoginResponse>(HttpStatusCode.BadRequest, "User Is not Active, Please Contact support");
+                    return BadRequest<LoginResponse>("User Is not Active, Please Contact support");
 
                 var roles = await _userManager.GetRolesAsync(user);
 
@@ -114,7 +113,7 @@ namespace Oil_System.Service
 
                 return Success(response);
             }
-            return Failure<LoginResponse>(HttpStatusCode.Unauthorized, "Invalid credentials");
+            return BadRequest<LoginResponse>("Invalid credentials");
         }
         public async Task<BaseResponse<bool>> ChangeStatusAsync(ChangeStatusRequest request)
         {
@@ -122,7 +121,7 @@ namespace Oil_System.Service
 
             if (user == null)
             {
-                return Failure<bool>(System.Net.HttpStatusCode.NotFound, "User not found");
+                return BadRequest<bool>("User not found");
             }
             user.IsActive = request.IsActive;
             user.UpdatedDate = DateTime.UtcNow;
@@ -130,7 +129,7 @@ namespace Oil_System.Service
 
             if (!result.Succeeded)
             {
-                return Failure<bool>(System.Net.HttpStatusCode.BadRequest, "Failed to update user status");
+                return BadRequest<bool>("Failed to update user status");
             }
 
             return Updated<bool>();
@@ -152,7 +151,7 @@ namespace Oil_System.Service
 
             if (users == null)
             {
-                return Failure<PagedResult<AppUserDto>>(HttpStatusCode.BadRequest, "No resource found");
+                return BadRequest<PagedResult<AppUserDto>>("No resource found");
             }
 
             var pagedUsers = await users.ToPagedResultAsync(request.PageNumber, request.PageSize);
@@ -167,7 +166,7 @@ namespace Oil_System.Service
 
             if (user == null)
             {
-                return NotFound<AppUserDto>();
+                return BadRequest<AppUserDto>("User not found");
             }
 
             return Success<AppUserDto>(_mapper.Map<AppUserDto>(user));
