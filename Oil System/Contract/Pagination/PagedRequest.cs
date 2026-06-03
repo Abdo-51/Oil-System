@@ -14,9 +14,5 @@ namespace Oil_System.Contract.Pagination
         [JsonIgnore]
         public List<Expression<Func<T, bool>>> FilterBy { get; set; } = new List<Expression<Func<T, bool>>>();
 
-        public void AddFilter(Expression<Func<T, bool>> filter)
-        {
-            FilterBy.Add(filter);
-        }
     }
 }

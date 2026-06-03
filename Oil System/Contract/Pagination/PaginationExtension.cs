@@ -39,9 +39,8 @@ namespace Oil_System.Contract.Pagination
 
         public static async Task<PagedResult<T>> ToPagedResultAsync<T>(this IQueryable<T> query, int pageNumber, int pageSize)
         {
-            var totalCount = query.Count();
             var items = query.ApplyPagination(pageNumber, pageSize).ToList();
-            var pagedResult = new PagedResult<T>(items, totalCount, pageNumber, pageSize);
+            var pagedResult = new PagedResult<T>(items, items.Count, pageNumber, pageSize);
             return pagedResult;
         }
     }
