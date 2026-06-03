@@ -4,10 +4,13 @@ namespace Oil_System.Contract.Request.Authentcation
 {
     public class RegisterRequest
     {
-        public string Username { get; set; } = string.Empty;
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public string ConfirmPassword { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
+        public DateTime BirthDate { get; set; }
         public bool IsActive { get; set; } = true;
         public string Role { get; set; } = string.Empty;
     }
@@ -16,15 +19,26 @@ namespace Oil_System.Contract.Request.Authentcation
     {
         public RegisterRequestValidator()
         {
-            RuleFor(x => x.Username)
-                .NotEmpty().WithMessage("Username is required.")
-                .MinimumLength(3).WithMessage("Username must be at least 3 characters long.");
+            RuleFor(x => x.FirstName)
+                .NotEmpty().WithMessage("First name is required.")
+                .MinimumLength(3).WithMessage("Firstname must be at least 3 characters long.");
+
+            RuleFor(x => x.LastName)
+                .NotEmpty().WithMessage("Lastname is required.")
+                .MinimumLength(3).WithMessage("Last name must be at least 3 characters long.");
+
+            RuleFor(x => x.BirthDate)
+                .NotEmpty().WithMessage("BirthDate is required")
+                .Must(IsAdult)
+                .WithMessage("User must be greater the 18");
+
+            RuleFor(x => x.PhoneNumber)
+                .NotEmpty().WithMessage("Phone number is required.")
+                .Matches(@"^\+?[1-9]\d{1,14}$").WithMessage("Invalid phone number format.");
 
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("Email is required.")
-                .EmailAddress().WithMessage("Invalid email format.")
-                //.MustAsync(async (email, cancellation) => ! await )
-                ;
+                .EmailAddress().WithMessage("Invalid email format.");
 
             RuleFor(x => x.Password)
                 .NotEmpty().WithMessage("Password is required.")
@@ -36,6 +50,19 @@ namespace Oil_System.Contract.Request.Authentcation
             RuleFor(x => x.Role)
                 .NotEmpty().WithMessage("Role is required.")
                 .Must(role => role == "Admin" || role == "User").WithMessage("Role must be either 'Admin' or 'User'.");
+        }
+
+        private bool IsAdult(DateTime birthdate)
+        {
+            var today = DateTime.Today;
+            var age = today.Year - birthdate.Year;
+
+            if (birthdate.Date > today.AddYears(-age))
+            {
+                age--;
+            }
+
+            return age >= 18;
         }
     }
 }

@@ -17,30 +17,30 @@ builder.Services.injectservices(builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
+//{
+app.UseSwagger();
+app.UseSwaggerUI();
+
+//Apply pending migrations at startup
+using (var scope = app.Services.CreateScope())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.Migrate();
 
-    //Apply pending migrations at startup
-    using (var scope = app.Services.CreateScope())
+    //Add default roles if they don't exist
+    var RoleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    if (!await RoleManager.RoleExistsAsync("Admin"))
     {
-        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        dbContext.Database.Migrate();
-
-        //Add default roles if they don't exist
-        var RoleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        if (!await RoleManager.RoleExistsAsync("Admin"))
-        {
-            await RoleManager.CreateAsync(new IdentityRole("Admin"));
-        }
-        if (!await RoleManager.RoleExistsAsync("User"))
-        {
-            await RoleManager.CreateAsync(new IdentityRole("User"));
-        }
+        await RoleManager.CreateAsync(new IdentityRole("Admin"));
     }
-
+    if (!await RoleManager.RoleExistsAsync("User"))
+    {
+        await RoleManager.CreateAsync(new IdentityRole("User"));
+    }
 }
+
+//}
 
 app.UseMiddleware<CustomMiddleware>();
 

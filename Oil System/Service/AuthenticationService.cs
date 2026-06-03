@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Oil_System.Contract.BaseResponse;
+using Oil_System.Contract.Pagination;
 using Oil_System.Contract.Request.Authentcation;
 using Oil_System.Contract.Response.Authentcation;
 using Oil_System.Models;
+using Oil_System.Resource.Authentication;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
@@ -16,6 +18,8 @@ namespace Oil_System.Service
     #region Interfaces
     public interface IAuthenticationService
     {
+        Task<BaseResponse<AppUserDto>> GetUserByIdAsync(Guid Id);
+        Task<BaseResponse<PagedResult<AppUserDto>>> GetUsersAsync(UsersSearch request);
         Task<BaseResponse<RegisterResponse>> CreateAccountAsync(RegisterRequest request);
         Task<BaseResponse<bool>> ChangeStatusAsync(ChangeStatusRequest request);
         Task<BaseResponse<LoginResponse>> LoginAsync(LoginRequest request);
@@ -46,23 +50,29 @@ namespace Oil_System.Service
         #endregion
 
         #region Methods
-
         public async Task<BaseResponse<RegisterResponse>> CreateAccountAsync(RegisterRequest request)
         {
+            var existingUser = await _userManager.FindByEmailAsync(request.Email);
+
+            if (existingUser != null)
+            {
+                return Failure<RegisterResponse>(System.Net.HttpStatusCode.BadRequest, "Email is already in use.");
+            }
+
             var newUser = _mapper.Map<AppUser>(request);
 
             var result = await _userManager.CreateAsync(newUser, request.Password);
 
             if (!result.Succeeded)
             {
-                return Failure<RegisterResponse>(System.Net.HttpStatusCode.BadRequest, "Account creation failed");
+                var error = result?.Errors?.FirstOrDefault().Description;
+                return Failure<RegisterResponse>(System.Net.HttpStatusCode.BadRequest, $"Account creation failed because {error}");
             }
 
             await _userManager.AddToRoleAsync(newUser, request.Role);
 
             return Created<RegisterResponse>();
         }
-
         public async Task<BaseResponse<LoginResponse>> LoginAsync(LoginRequest request)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == request.UserName);
@@ -88,7 +98,7 @@ namespace Oil_System.Service
                 var token = new JwtSecurityToken(
                     issuer: _configuration["Jwt:Issuer"],
                     audience: _configuration["Jwt:Audience"],
-                    expires: DateTime.Now.AddHours(3),
+                    expires: DateTime.Now.AddMinutes(double.Parse(_configuration["jwt:ExpireMinutes"])),
                     claims: authClaims,
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                 );
@@ -98,15 +108,14 @@ namespace Oil_System.Service
                 {
                     Token = Accesstoken,
                     Email = user.Email,
-                    ExpireAt = DateTime.Now.AddHours(3),
-                    Role = roles.FirstOrDefault()
+                    ExpireAt = DateTime.Now.AddMinutes(double.Parse(_configuration["jwt:ExpireMinutes"])),
+                    Roles = roles.ToList()
                 };
 
                 return Success(response);
             }
             return Failure<LoginResponse>(HttpStatusCode.Unauthorized, "Invalid credentials");
         }
-
         public async Task<BaseResponse<bool>> ChangeStatusAsync(ChangeStatusRequest request)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == request.UserId);
@@ -126,7 +135,43 @@ namespace Oil_System.Service
 
             return Updated<bool>();
         }
+        public async Task<BaseResponse<PagedResult<AppUserDto>>> GetUsersAsync(UsersSearch request)
+        {
+            request.AddUsersFilter();
 
+            var users = _userManager.Users.AsQueryable();
+
+            //Apply Filtering
+            users = users.ApplyFiltering(request.FilterBy);
+
+            //Apply Sorting
+            users = users.ApplySorting(request.SortBy, request.SortDirection);
+
+            //Apply Pagination
+            users = users.ApplyPagination(request.PageNumber, request.PageSize);
+
+            if (users == null)
+            {
+                return Failure<PagedResult<AppUserDto>>(HttpStatusCode.BadRequest, "No resource found");
+            }
+
+            var pagedUsers = await users.ToPagedResultAsync(request.PageNumber, request.PageSize);
+
+            var result = _mapper.Map<PagedResult<AppUserDto>>(pagedUsers);
+
+            return Success<PagedResult<AppUserDto>>(result);
+        }
+        public async Task<BaseResponse<AppUserDto>> GetUserByIdAsync(Guid Id)
+        {
+            var user = await _userManager.FindByIdAsync(Id.ToString());
+
+            if (user == null)
+            {
+                return NotFound<AppUserDto>();
+            }
+
+            return Success<AppUserDto>(_mapper.Map<AppUserDto>(user));
+        }
         #endregion
 
     }

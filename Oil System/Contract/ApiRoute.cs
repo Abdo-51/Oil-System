@@ -13,9 +13,11 @@
 
         public static class Account
         {
-            public const string Register = "api/account/createUser";
-            public const string Login = "api/account/login";
-            public const string Update = "api/acount/updateStatus";
+            public const string GetAllUsers = "api/account/Users";
+            public const string GetById = "api/account/UserDetails/{id}";
+            public const string Register = "api/account/CreateUser";
+            public const string Login = "api/account/Login";
+            public const string Update = "api/acount/UpdateStatus";
         }
     }
 }

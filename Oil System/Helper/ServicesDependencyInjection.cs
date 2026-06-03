@@ -81,7 +81,8 @@ namespace Oil_System.Helper
             #endregion
 
             //Register FluentValidation
-            services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
+            //services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
+            services.AddValidatorsFromAssemblies(new[] { typeof(RegisterRequestValidator).Assembly });
 
             //Register Automapper
             services.AddAutoMapper(cfg => cfg.AddProfile<Profiling>());

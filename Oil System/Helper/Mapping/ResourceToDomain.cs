@@ -7,8 +7,12 @@ namespace Oil_System.Helper.Mapping
     {
         private void MapResourceToDomain()
         {
+            #region RegisterRequest To AppUser
             CreateMap<RegisterRequest, AppUser>()
-                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email));
+                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
+                 .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.BirthDate)));
+
+            #endregion
         }
     }
 }
