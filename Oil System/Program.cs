@@ -41,6 +41,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 //}
+app.UseCors("OilSystem");
 
 app.UseMiddleware<CustomMiddleware>();
 

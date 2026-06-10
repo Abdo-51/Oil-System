@@ -81,11 +81,22 @@ namespace Oil_System.Helper
             #endregion
 
             //Register FluentValidation
-            //services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
             services.AddValidatorsFromAssemblies(new[] { typeof(RegisterRequestValidator).Assembly });
 
             //Register Automapper
             services.AddAutoMapper(cfg => cfg.AddProfile<Profiling>());
+
+            #region Add CORS policy
+            services.AddCors(options =>
+            {
+                options.AddPolicy("OilSystem", builder =>
+                {
+                    builder.WithOrigins("http://oilsystem.runasp.net/") // Replace with your actual frontend URLs
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
+            #endregion
 
             #region Custom Services registeration
             services.AddScoped<IAuthenticationService, AuthenticationService>();
