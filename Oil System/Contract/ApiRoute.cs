@@ -17,7 +17,9 @@
             public const string GetById = "api/account/UserDetails/{id}";
             public const string Register = "api/account/CreateUser";
             public const string Login = "api/account/Login";
-            public const string Update = "api/acount/UpdateStatus";
+            public const string UpdateStatus = "api/account/UpdateStatus";
+            public const string Delete = "api/account/DeleteUser/{id}";
+            public const string UpdateUser = "api/account/UpdateUser";
         }
     }
 }

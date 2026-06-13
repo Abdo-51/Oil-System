@@ -26,7 +26,7 @@ namespace Oil_System.Contract.BaseResponse
 
         public BaseResponse<T> Deleted<T>()
         {
-            return new BaseResponse<T>(true, HttpStatusCode.Accepted, "Resource updated successfully.");
+            return new BaseResponse<T>(true, HttpStatusCode.Accepted, "Resource deleted successfully.");
         }
     }
 }

@@ -49,7 +49,7 @@ namespace Oil_System.Contract.Request.Authentcation
 
             RuleFor(x => x.Role)
                 .NotEmpty().WithMessage("Role is required.")
-                .Must(role => role == "Admin" || role == "User").WithMessage("Role must be either 'Admin' or 'User'.");
+                .Must(role => role == "Admin" || role == "Cashier").WithMessage("Role must be either 'Admin' or 'Cashier'.");
         }
 
         private bool IsAdult(DateTime birthdate)

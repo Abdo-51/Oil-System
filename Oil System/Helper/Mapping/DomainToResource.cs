@@ -10,6 +10,10 @@ namespace Oil_System.Helper.Mapping
             #region Appuser to AppUserDto
             CreateMap<AppUser, AppUserDto>();
             #endregion
+
+            #region AppUserDto to Appuser
+            CreateMap<AppUserDto, AppUser>();
+            #endregion
         }
 
     }

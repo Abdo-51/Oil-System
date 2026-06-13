@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Oil_System.Contract;
 using Oil_System.Contract.Request.Authentcation;
+using Oil_System.Resource.Authentication;
 using Oil_System.Service;
 
 namespace Oil_System.Controllers
@@ -28,22 +28,22 @@ namespace Oil_System.Controllers
         #region Methods
 
         [HttpPost(ApiRoute.Account.GetAllUsers)]
-        public async Task<IActionResult> GetAllUsers(UsersSearch request)
+        public async Task<IActionResult> GetAllUsersAsync(UsersSearch request)
         {
             var result = await _authenticationService.GetUsersAsync(request);
             return GenericResult(result);
         }
 
         [HttpPost(ApiRoute.Account.GetById)]
-        public async Task<IActionResult> GetUserById(Guid id)
+        public async Task<IActionResult> GetUserByIdAsync(Guid id)
         {
             var result = await _authenticationService.GetUserByIdAsync(id);
             return GenericResult(result);
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost(ApiRoute.Account.Register)]
-        public async Task<IActionResult> CreateUser(RegisterRequest request)
+        public async Task<IActionResult> CreateUserAsync(RegisterRequest request)
         {
             var validationResult = await _validator.ValidateAsync(request);
 
@@ -62,15 +62,15 @@ namespace Oil_System.Controllers
 
 
         [HttpPost(ApiRoute.Account.Login)]
-        public async Task<IActionResult> LoginUser(LoginRequest request)
+        public async Task<IActionResult> LoginUserAsync(LoginRequest request)
         {
             var result = await _authenticationService.LoginAsync(request);
             return GenericResult(result);
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPost(ApiRoute.Account.Update)]
-        public async Task<IActionResult> UpdateUser(ChangeStatusRequest request)
+        //[Authorize(Roles = "Admin")]
+        [HttpPost(ApiRoute.Account.UpdateStatus)]
+        public async Task<IActionResult> UpdateStatusAsync(ChangeStatusRequest request)
         {
             var validationResult = await _changeStatusValidator.ValidateAsync(request);
 
@@ -87,6 +87,19 @@ namespace Oil_System.Controllers
             return GenericResult(result);
         }
 
+        [HttpPost(ApiRoute.Account.UpdateUser)]
+        public async Task<IActionResult> UpdateUserAsync(AppUserDto request)
+        {
+            var result = await _authenticationService.UpdateUserAsync(request);
+            return GenericResult(result);
+        }
+
+        [HttpPost(ApiRoute.Account.Delete)]
+        public async Task<IActionResult> DeleteUserAsync(Guid id)
+        {
+            var result = await _authenticationService.DeleteUserAsync(id);
+            return GenericResult(result);
+        }
         #endregion
     }
 }
