@@ -23,6 +23,14 @@ namespace Oil_System.Helper.Mapping
                  .ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
             #endregion
 
+            #region CreateCategoryRequest To Category
+            CreateMap<CreateCategoryRequest, Category>();
+            #endregion
+
+            #region UpdateCategoryRequest To Category
+            CreateMap<UpdateCategoryRequest, Category>()
+                 .ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
+            #endregion
 
             #region CreateBrandRequest To Brand
             CreateMap<CreateBrandRequest, Brand>();

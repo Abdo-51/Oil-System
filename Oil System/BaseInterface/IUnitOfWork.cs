@@ -6,6 +6,7 @@ namespace Oil_System.BaseInterface
     {
         Task<int> CommitChanges();
         public IBrandRepository brandRepository { get; }
+        public ICategoryRepository categoryRepository { get; }
         Task<bool> CommitChanges();
     }
 }

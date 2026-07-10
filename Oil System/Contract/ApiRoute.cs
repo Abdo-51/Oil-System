@@ -30,5 +30,13 @@
             public const string DeleteBrand = "api/Brands/deleteBrand/{id}";
         }
 
+        public static class Category
+        {
+            public const string GetAllCategories = "api/Categories/Categories";
+            public const string GetCategoryById = "api/Categories/Category/{id}";
+            public const string CreateCategory = "api/Categories/createCategory";
+            public const string UpdateCategory = "api/Categories/updateCategory";
+            public const string DeleteCategory = "api/Categories/deleteCategory/{id}";
+        }
     }
 }
