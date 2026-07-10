@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Oil_System.BaseInterface;
+using Oil_System.BaseInterface.Implementation;
 using Oil_System.Contract.Request.Authentcation;
 using Oil_System.Helper.Mapping;
 using Oil_System.Models;
@@ -99,7 +101,9 @@ namespace Oil_System.Helper
             #endregion
 
             #region Custom Services registeration
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IBrandService, BrandService>();
             #endregion
 
             return services;

@@ -1,6 +1,8 @@
 ﻿using Oil_System.Contract.Request.Authentcation;
 using Oil_System.Models;
 using Oil_System.Resource.Authentication;
+using Oil_System.Resource.BrandDtos;
+using Oil_System.Resource.CategoryDtos;
 
 namespace Oil_System.Helper.Mapping
 {
@@ -18,6 +20,16 @@ namespace Oil_System.Helper.Mapping
             CreateMap<AppUserDto, AppUser>()
                  .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
                  .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.BirthDate))
+                 .ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
+            #endregion
+
+
+            #region CreateBrandRequest To Brand
+            CreateMap<CreateBrandRequest, Brand>();
+            #endregion
+
+            #region UpdateBrandRequest To Brand
+            CreateMap<UpdateBrandRequest, Brand>()
                  .ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
             #endregion
         }

@@ -21,5 +21,14 @@
             public const string Delete = "api/account/DeleteUser/{id}";
             public const string UpdateUser = "api/account/UpdateUser";
         }
+        public static class Brand
+        {
+            public const string GetAllBrands = "api/Brands/Brands";
+            public const string GetBrandById = "api/Brands/Brand/{id}";
+            public const string CreateBrand = "api/Brands/createBrand";
+            public const string UpdateBrand = "api/Brands/updateBrand";
+            public const string DeleteBrand = "api/Brands/deleteBrand/{id}";
+        }
+
     }
 }

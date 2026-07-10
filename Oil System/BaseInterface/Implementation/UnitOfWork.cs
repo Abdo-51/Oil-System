@@ -1,4 +1,5 @@
-﻿using Oil_System.Repository.Data;
+﻿using Oil_System.Repository;
+using Oil_System.Repository.Data;
 
 namespace Oil_System.BaseInterface.Implementation
 {
@@ -6,6 +7,7 @@ namespace Oil_System.BaseInterface.Implementation
     {
         #region Fields
         private readonly ApplicationDbContext _context;
+        public IBrandRepository brandRepository => new BrandRepository(_context);
         #endregion
 
         #region Constructors
@@ -17,9 +19,9 @@ namespace Oil_System.BaseInterface.Implementation
         #endregion
 
         #region Methods
-        public async Task<int> CommitChanges()
+        public async Task<bool> CommitChanges()
         {
-            return await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync() > 0;
         }
         #endregion
     }

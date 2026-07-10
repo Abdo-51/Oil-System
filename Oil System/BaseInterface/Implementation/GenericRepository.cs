@@ -2,6 +2,7 @@
 using Oil_System.Contract.Pagination;
 using Oil_System.Models;
 using Oil_System.Repository.Data;
+using System.Data.Common;
 
 namespace Oil_System.BaseInterface.Implementation
 {
