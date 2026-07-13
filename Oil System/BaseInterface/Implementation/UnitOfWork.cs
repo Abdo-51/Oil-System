@@ -7,6 +7,7 @@ namespace Oil_System.BaseInterface.Implementation
     {
         #region Fields
         private readonly ApplicationDbContext _context;
+        public IOilPacketsRepository oilPacketsRepository => new OilPacketsRepository(_context);
         public IBrandRepository brandRepository => new BrandRepository(_context);
         public ICategoryRepository categoryRepository => new CategoryRepository(_context);
 

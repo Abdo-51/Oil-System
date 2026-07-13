@@ -14,15 +14,18 @@ namespace Oil_System.Helper.Mapping
             CreateMap<AppUser, AppUserDto>();
             #endregion
 
-            #region AppUserDto to Appuser
-            CreateMap<AppUserDto, AppUser>();
-
             #region Brand to BrandDto
             CreateMap<Brand, BrandDto>();
             #endregion
 
             #region Category to CategoryDto
             CreateMap<Category, CategoryDto>();
+            #endregion
+
+            #region OilPackets to OilPacketDto
+            CreateMap<OilPacket, OilPacketDto>()
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+                .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.Brand.Name));
             #endregion
         }
 

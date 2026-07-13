@@ -103,6 +103,7 @@ namespace Oil_System.Helper
             #region Custom Services registeration
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IOilPacketService, OilPacketService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IBrandService, BrandService>();
             #endregion

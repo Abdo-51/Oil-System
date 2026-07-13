@@ -3,6 +3,7 @@ using Oil_System.Models;
 using Oil_System.Resource.Authentication;
 using Oil_System.Resource.BrandDtos;
 using Oil_System.Resource.CategoryDtos;
+using Oil_System.Resource.OilPacketDtos;
 
 namespace Oil_System.Helper.Mapping
 {
@@ -38,6 +39,15 @@ namespace Oil_System.Helper.Mapping
 
             #region UpdateBrandRequest To Brand
             CreateMap<UpdateBrandRequest, Brand>()
+                 .ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
+            #endregion
+
+            #region CreateOilPacketRequest To OilPacket
+            CreateMap<CreateOilPacketsRequest, OilPacket>();
+            #endregion
+
+            #region UpdateOilPacketRequest To OilPacket
+            CreateMap<UpdateOilPacketsRequest, OilPacket>()
                  .ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
             #endregion
         }

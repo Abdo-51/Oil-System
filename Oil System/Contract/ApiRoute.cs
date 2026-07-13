@@ -2,14 +2,6 @@
 {
     public static class ApiRoute
     {
-        public static class OilsPacket
-        {
-            public const string GetAll = "api/oilspacket/getall";
-            public const string GetById = "api/oilspacket/getbyid/{id}";
-            public const string Create = "api/oilspacket/create";
-            public const string Update = "api/oilspacket/update/{id}";
-            public const string Delete = "api/oilspacket/delete/{id}";
-        }
 
         public static class Account
         {
@@ -21,6 +13,16 @@
             public const string Delete = "api/account/DeleteUser/{id}";
             public const string UpdateUser = "api/account/UpdateUser";
         }
+
+        public static class OilsPacket
+        {
+            public const string GetAllOilsPackets = "api/oilspacket/oilPackets";
+            public const string GetOilsPacketById = "api/oilspacket/oilPacketDetails/{id}";
+            public const string CreateOilsPackets = "api/oilspacket/createOilPacket";
+            public const string UpdateOilsPackets = "api/oilspacket/updateOilPacket";
+            public const string DeleteOilsPackets = "api/oilspacket/deleteOilPacket/{id}";
+        }
+
         public static class Brand
         {
             public const string GetAllBrands = "api/Brands/Brands";
