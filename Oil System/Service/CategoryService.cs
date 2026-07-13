@@ -93,7 +93,8 @@ namespace Oil_System.Service
             var validationResult = await _updateCategoryValidator.ValidateAsync(category);
             if (!validationResult.IsValid)
             {
-                return BadRequest<bool>("Invalid category data.");
+                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                return BadRequest<bool>(string.Join("; ", errors));
             }
 
             var categoryEntity = await _unitOfWork.categoryRepository.GetByIdAsync(category.Id);
