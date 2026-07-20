@@ -45,6 +45,8 @@ app.UseCors("OilSystem");
 
 app.UseMiddleware<CustomMiddleware>();
 
+app.UseRateLimiter();
+
 app.UseAuthentication();
 
 app.UseAuthorization();

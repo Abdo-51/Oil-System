@@ -12,6 +12,7 @@ using Oil_System.Models;
 using Oil_System.Repository.Data;
 using Oil_System.Service;
 using System.Text;
+using System.Threading.RateLimiting;
 
 namespace Oil_System.Helper
 {
@@ -79,6 +80,25 @@ namespace Oil_System.Helper
                     // Use the new OpenApiSecuritySchemeReference class here
                     [new OpenApiSecuritySchemeReference("Bearer", document)] = new List<string>()
                 });
+            });
+            #endregion
+
+            #region RateLimiting registeration
+            services.AddRateLimiter(options =>
+            {
+                options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+                {
+                    return RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                        factory: partition => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 10, // Maximum number of requests
+                            Window = TimeSpan.FromMinutes(1), // Time window
+                            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                            QueueLimit = 0 // No queuing
+                        });
+                });
+                options.RejectionStatusCode = 429; // Too Many Requests
             });
             #endregion
 
